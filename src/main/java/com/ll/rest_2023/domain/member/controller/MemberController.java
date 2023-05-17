@@ -3,6 +3,7 @@ package com.ll.rest_2023.domain.member.controller;
 import com.ll.rest_2023.domain.member.dto.LoginRequestDto;
 import com.ll.rest_2023.domain.member.entity.Member;
 import com.ll.rest_2023.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,11 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public Member login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        return memberService.findByUsername(loginRequestDto.getUsername()).orElse(null);
+    public String login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse resp) {
+        String accessToken = memberService.genAccessToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
+
+        resp.addHeader("Authentication", accessToken);
+
+        return "응답본문";
     }
 }

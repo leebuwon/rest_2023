@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,12 +28,12 @@ class MemberControllerTest {
     private MockMvc mvc;
 
     @Test
-    @DisplayName("POST /member/login 은 로그인 처리 URL 이다.")
+    @DisplayName("POST api/v1/member/login 은 로그인 처리 URL 이다.")
     void t1() throws Exception {
         // When
         ResultActions resultActions = mvc
                 .perform(
-                        post("/member/login")
+                        post("/api/v1/member/login")
                                 .content("""
                                         {
                                             "username": "user1",
@@ -46,9 +47,25 @@ class MemberControllerTest {
         // Then
         resultActions
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.resultCode").value("S-1"))
                 .andExpect(jsonPath("$.msg").exists())
                 .andExpect(jsonPath("$.data.accessToken").exists());
+    }
+
+    @Test
+    @DisplayName("GET api/v1/member/me 는 내 정보 조회이다.")
+    void t2() throws Exception {
+        // When
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/api/v1/member/me")
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.resultCode").value("S-1"))
+                .andExpect(jsonPath("$.msg").exists());
     }
 }

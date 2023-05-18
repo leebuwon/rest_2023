@@ -1,24 +1,21 @@
 package com.ll.rest_2023.domain.member.controller;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -48,14 +45,10 @@ class MemberControllerTest {
 
         // Then
         resultActions
-                .andExpect(status().is2xxSuccessful());
-
-        MvcResult mvcResult = resultActions.andReturn();
-
-        MockHttpServletResponse response = mvcResult.getResponse();
-
-        String authentication = response.getHeader("Authentication");
-
-        assertThat(authentication).isNotEmpty();
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.resultCode").value("S-1"))
+                .andExpect(jsonPath("$.msg").exists())
+                .andExpect(jsonPath("$.data.accessToken").exists());
     }
 }

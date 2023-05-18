@@ -1,13 +1,14 @@
 package com.ll.rest_2023.domain.member.controller;
 
 import com.ll.rest_2023.base.rsData.RsData;
-import com.ll.rest_2023.domain.member.dto.LoginRequestDto;
+import com.ll.rest_2023.domain.member.dto.request.LoginRequest;
+import com.ll.rest_2023.domain.member.dto.response.LoginResponse;
+import com.ll.rest_2023.domain.member.dto.response.MeResponse;
 import com.ll.rest_2023.domain.member.entity.Member;
 import com.ll.rest_2023.domain.member.service.MemberService;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -19,18 +20,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/member", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@Tag(name = "ApiV1MemberController", description = "로그인, 로그인 된 회원의 정보")
 public class MemberController {
-
-    @AllArgsConstructor
-    @Getter
-    public static class LoginResponse {
-        private final String accessToken;
-    }
 
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public RsData<LoginResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+    @Operation(summary = "로그인, 엑세스 토큰 발급")
+    public RsData<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequestDto) {
         String accessToken = memberService.genAccessToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
 
         return RsData.of(
@@ -40,14 +37,9 @@ public class MemberController {
         );
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class MeResponse {
-        private final Member member;
-    }
-
     // consumes = ALL_VALUE => 나는 딱히 JSON 을 입력받기를 고집하지 않겠다.
     @GetMapping(value = "/me", consumes = ALL_VALUE)
+    @Operation(summary = "로그인된 사용자의 정보")
     public RsData<MeResponse> me(@AuthenticationPrincipal User user) {
         Member member = memberService.findByUsername(user.getUsername()).get();
 

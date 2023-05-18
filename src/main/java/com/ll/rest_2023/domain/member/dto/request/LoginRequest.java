@@ -1,4 +1,4 @@
-package com.ll.rest_2023.domain.member.dto;
+package com.ll.rest_2023.domain.member.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class LoginRequestDto {
+public class LoginRequest {
 
     @NotBlank
     private String username;

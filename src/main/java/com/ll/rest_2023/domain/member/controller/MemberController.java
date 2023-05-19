@@ -7,6 +7,7 @@ import com.ll.rest_2023.domain.member.dto.response.MeResponse;
 import com.ll.rest_2023.domain.member.entity.Member;
 import com.ll.rest_2023.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class MemberController {
 
     // consumes = ALL_VALUE => 나는 딱히 JSON 을 입력받기를 고집하지 않겠다.
     @GetMapping(value = "/me", consumes = ALL_VALUE)
-    @Operation(summary = "로그인된 사용자의 정보")
+    @Operation(summary = "로그인된 사용자의 정보", security = @SecurityRequirement(name = "bearerAuth"))
     public RsData<MeResponse> me(@AuthenticationPrincipal User user) {
         Member member = memberService.findByUsername(user.getUsername()).get();
 

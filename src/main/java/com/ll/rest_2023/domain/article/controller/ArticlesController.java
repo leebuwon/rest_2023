@@ -24,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ArticlesController {
     private final ArticleService articleService;
 
-    @GetMapping(value = "")
+    @GetMapping
     @Operation(summary = "게시물들")
     public RsData<ArticlesResponse> articles() {
         List<Article> articles = articleService.findAll();

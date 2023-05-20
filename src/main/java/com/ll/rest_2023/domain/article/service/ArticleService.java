@@ -7,6 +7,7 @@ import com.ll.rest_2023.domain.article.repository.ArticleRepository;
 import com.ll.rest_2023.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class ArticleService {
     private final ArticleRepository articleRepository;
 
+    @Transactional
     public RsData<Article> write(Member author, String subject, String content) {
         Article article = Article.builder()
                 .author(author)
@@ -59,10 +61,12 @@ public class ArticleService {
         );
     }
 
-    public void modify(Article article, String subject, String content) {
-        article.setSubject(subject);
-        article.setContent(content);
+    @Transactional
+    public RsData<Article> modify(Article article, String subject, String content) {
+        article.modify(subject, content);
         articleRepository.save(article);
+
+        return RsData.of("S-1", "%d번 게시물이 수정되었습니다.".formatted(article.getId()), article);
     }
 
     public RsData canModify(Member actor, Article article) {

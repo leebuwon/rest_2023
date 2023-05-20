@@ -8,7 +8,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +18,9 @@ public class Article extends BaseEntity {
     private Member author;
     private String subject;
     private String content;
+
+    public void modify(String subject, String content){
+        this.subject = subject;
+        this.content = content;
+    }
 }

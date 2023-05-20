@@ -43,6 +43,7 @@ public class ArticleService {
         return articleRepository.findById(id);
     }
 
+    @Transactional
     public void delete(Article article) {
         articleRepository.delete(article);
     }

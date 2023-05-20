@@ -3,10 +3,7 @@ package com.ll.rest_2023.domain.article.controller;
 import com.ll.rest_2023.base.rsData.RsData;
 import com.ll.rest_2023.domain.article.dto.request.ModifyRequest;
 import com.ll.rest_2023.domain.article.dto.request.WriteRequest;
-import com.ll.rest_2023.domain.article.dto.response.ArticleResponse;
-import com.ll.rest_2023.domain.article.dto.response.ArticlesResponse;
-import com.ll.rest_2023.domain.article.dto.response.ModifyResponse;
-import com.ll.rest_2023.domain.article.dto.response.WriteResponse;
+import com.ll.rest_2023.domain.article.dto.response.*;
 import com.ll.rest_2023.domain.article.entity.Article;
 import com.ll.rest_2023.domain.article.service.ArticleService;
 import com.ll.rest_2023.domain.member.entity.Member;
@@ -92,5 +89,25 @@ public class ArticlesController {
         RsData<Article> modify = articleService.modify(modifyArticle.get(), modifyRequest.getSubject(), modifyRequest.getContent());
 
         return RsData.of(modify.getResultCode(), modify.getMsg(), new ModifyResponse(modify.getData()));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "삭제", security = @SecurityRequirement(name = "bearerAuth"))
+    public RsData<DeleteResponse> delete(@PathVariable Long id, @AuthenticationPrincipal User user){
+        Member member = memberService.findByUsername(user.getUsername()).orElseThrow();
+
+        Optional<Article> deleteArticle = articleService.findById(id);
+
+        if (deleteArticle.isEmpty()){
+            return RsData.of("F-1", "%d번 게시물이 존재하지 않습니다.".formatted(id), null);
+        }
+
+        RsData rsData = articleService.canDelete(member, deleteArticle.get());
+
+        if (rsData.isFail()) return rsData;
+
+        articleService.delete(deleteArticle.get());
+
+        return RsData.of("S-1", "성공", null);
     }
 }
